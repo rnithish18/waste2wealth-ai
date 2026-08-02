@@ -20,25 +20,15 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor with smart fallback
+// Response interceptor - handle network errors without harsh page reloads
 api.interceptors.response.use(
   (response) => {
     return response;
   },
   async (error) => {
-    // If backend returns 401 unauthorized
-    if (error.response?.status === 401) {
-      localStorage.removeItem('w2w_token');
-      localStorage.removeItem('w2w_user');
-      if (!window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/signup') && window.location.pathname !== '/') {
-        window.location.href = '/login';
-      }
-      return Promise.reject(error);
-    }
-
     // Network fallback mode
     if (!error.response && error.code === 'ERR_NETWORK') {
-      const url = error.config.url;
+      const url = error.config.url || '';
       console.warn(`[Waste2Wealth AI] Network fallback active for ${url}`);
 
       if (url.includes('/auth/me') || url.includes('/auth/login') || url.includes('/auth/register')) {
@@ -58,6 +48,7 @@ api.interceptors.response.use(
         return {
           data: {
             token: 'demo_jwt_token_msme_2026',
+            access_token: 'demo_jwt_token_msme_2026',
             data: { user: demoUser },
             user: demoUser,
           },
