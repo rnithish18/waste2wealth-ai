@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=sqlite:///./waste2wealth.db
+      - SECRET_KEY=waste2wealth_secret_key_msme_hackathon_2026
+      - GROQ_API_KEY=${GROQ_API_KEY:-your_groq_api_key_here}
+    restart: always
+
+  frontend:
+    build:
+      context: ./waste2wealth-frontend/waste2wealth-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: always

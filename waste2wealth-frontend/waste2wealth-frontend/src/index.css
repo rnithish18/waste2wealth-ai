@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display text-ink;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-forest-600 ring-offset-2 ring-offset-paper;
+  }
+  ::selection {
+    @apply bg-brass-200 text-ink;
+  }
+}
+
+@layer components {
+  /* Small mono "spec sheet" tag used across the app as a signature UI element,
+     echoing the industrial/ledger feel of the brand (e.g. "MATERIAL FLOW — LIVE") */
+  .eyebrow-tag {
+    @apply inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-forest-700;
+  }
+
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .card-surface {
+    @apply rounded-2xl border border-ink/[0.06] bg-white shadow-card;
+  }
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  z-index: 0;
+}
