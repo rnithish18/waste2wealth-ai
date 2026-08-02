@@ -2,11 +2,24 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.database import engine, Base
+from app.database import engine, Base, SessionLocal
+from app.models import User
 from app.routers import auth, waste, ai, transactions, messages, notifications, analytics, admin
 
 # Create database tables automatically
 Base.metadata.create_all(bind=engine)
+
+# Automatically seed database on startup if empty (fixes Render ephemeral container issue)
+try:
+    db = SessionLocal()
+    user_count = db.query(User).count()
+    if user_count == 0:
+        print("[STARTUP] Database empty. Running seed_database()...")
+        from seed import seed_database
+        seed_database()
+    db.close()
+except Exception as e:
+    print(f"[STARTUP WARNING] Seed check: {e}")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
